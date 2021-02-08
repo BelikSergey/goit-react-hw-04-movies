@@ -17,7 +17,7 @@ export default class HomePage extends Component {
         const response = await ApiMovie();
         // console.log(response);
         this.setState({ movies: response.data.results });
-        console.log(this.state.movies);
+        // console.log(this.state.movies);
     }
 
     render() {
@@ -31,7 +31,7 @@ export default class HomePage extends Component {
                 <ul>
                     {movies.map(film => (
                         <li key={film.id}>
-                            <Link to={`movie/${film.id}`}>{film.title}</Link>
+                            <Link to={`movies/${film.id}`}>{film.title}</Link>
                         </li>
                     ))}
                 </ul>

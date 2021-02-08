@@ -28,7 +28,7 @@ const App = () => {
                 <Route path="/movies" exact component={MoviesPage} />
                 <Route path="/movies/:moviesId" component={MovieDetailsPage} />
 
-                {/* <Route path='/movies' component={Cast} /> */}
+                {/* <Route path='/movies/:moviesId/cast' component={Cast} /> */}
                 {/* <Route path='/movies' component={Reviews} /> */}
                 <Route component={PageNotFound} />
             </Switch>

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import Loader from 'react-loader-spinner';
 import { toast } from 'react-toastify';
+import Loader from 'react-loader-spinner';
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
 import Searchbar from '../components/SearchMovie';
 import ApiMovie from '../services/ApiMovie';
@@ -77,7 +77,9 @@ class MoviesPage extends Component {
                     <ul>
                         {movies.map(film => (
                             <li key={film.id}>
-                                <Link to={`movie${film.id}`}>{film.title}</Link>
+                                <Link to={`movies/${film.id}`}>
+                                    {film.title}
+                                </Link>
                             </li>
                         ))}
                     </ul>
