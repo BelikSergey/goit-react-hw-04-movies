@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Route } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 import ApiMovie from '../services/ApiMovie';
 import Loader from 'react-loader-spinner';
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
-import axios from 'axios';
+// import axios from 'axios';
+import Cast from '../components/Cast';
+import Reviews from '../components/Reviews';
 
 export class MovieDetailsPage extends Component {
     static propTypes = {
@@ -49,7 +51,7 @@ export class MovieDetailsPage extends Component {
 
     async componentDidMount() {
         this.setState({ status: 'pending' });
-        console.log('компонет киношки замаунтился');
+        // console.log('компонет киношки замаунтился');
         // console.log(this.state);
         // console.log(prevState);
         // console.log(this.props);
@@ -57,22 +59,17 @@ export class MovieDetailsPage extends Component {
         try {
             const data = await ApiMovie('', this.props.match.params.moviesId);
             this.setState({ ...data.data });
-            //     console.log(`https://image.tmdb.org/t/p/w300${this.state.poster_path}`);
-            //  const images = await axios(`https://image.tmdb.org/t/p/w300${this.state.poster_path}`);
-            //  this.setState({imageSrc: images });
-            //  // console.log(data.data);
-            //     console.log(this.state.imageSrc);
         } catch (error) {
             toast('По вашему запросу ничего не найдено');
         }
         this.setState({ status: 'idle' });
     }
-    componentDidUpdate(prevProps, prevState) {
-        console.log('киношка обновилась');
-    }
-    componentWillUnmount() {
-        console.log('компонент одной киношки размонтирован');
-    }
+    // componentDidUpdate(prevProps, prevState) {
+    //     // console.log('киношка обновилась');
+    // }
+    // componentWillUnmount() {
+    //     console.log('компонент одной киношки размонтирован');
+    // }
 
     render() {
         const {
@@ -137,6 +134,18 @@ export class MovieDetailsPage extends Component {
                                 </li>
                             </ul>
                         </div>
+                        <Route
+                            path="/movies/:moviesId/cast"
+                            render={props => {
+                                return <Cast {...props} movieId={id} />;
+                            }}
+                        />
+                        <Route
+                            path="/movies/:moviesId/reviews"
+                            render={props => {
+                                return <Reviews {...props} movieId={id} />;
+                            }}
+                        />
                     </article>
                 )}
             </>
