@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import FetchCastReviews from '../../services/FetchCastReviews';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import axios from 'axios';
 
 export default class Reviews extends Component {
+    static propTypes = {
+        movieId: PropTypes.number.isRequired,
+    };
     state = {
         reviews: [],
     };
     async componentDidMount() {
-        // console.log('компонент ревью замаунтился');
         const reviews = 'reviews';
         try {
             const data = await FetchCastReviews(
@@ -26,7 +28,8 @@ export default class Reviews extends Component {
 
     render() {
         const { reviews } = this.state;
-        if (reviews.length !== 0) {
+        const { movieId } = this.props;
+        if (reviews.length !== 0 && movieId) {
             return (
                 <ul>
                     {reviews.map(el => {

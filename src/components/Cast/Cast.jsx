@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import FetchCastReviews from '../../services/FetchCastReviews';
 
 export default class Cast extends Component {
+    static propTypes = {
+        movieId: PropTypes.number.isRequired,
+    };
     state = {
         cast: [],
     };
@@ -25,7 +29,8 @@ export default class Cast extends Component {
     }
     render() {
         const { cast } = this.state;
-        if (cast.length !== 0) {
+        const { movieId } = this.props;
+        if (cast.length !== 0 && movieId) {
             return (
                 <ul>
                     {cast.map(el => {

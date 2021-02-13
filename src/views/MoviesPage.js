@@ -1,34 +1,45 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 import Loader from 'react-loader-spinner';
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
 import Searchbar from '../components/SearchMovie';
+import getQueryFromUrl from '../utils/getQueryFromUrl';
 import ApiMovie from '../services/ApiMovie';
+import MovieList from '../components/MovieList';
 
 class MoviesPage extends Component {
+    static propTypes = {
+        search: PropTypes.string,
+    };
+
     state = {
         search: '',
         movies: [],
         status: 'idle',
     };
+
+    componentDidMount() {
+        const { query } = getQueryFromUrl(this.props.location.search);
+        // console.log(query);
+        if (query) {
+            this.setState({ search: query });
+        }
+        // console.log('компонент поиск фильмов');
+    }
+
     async componentDidUpdate(prevProps, prevState) {
-        // console.log('компонет киношки обновился');
-        // console.log(this.state);
-        // console.log(prevState);
-        // console.log(this.props);
-        // console.log(prevProps);
         const prev = prevState.search;
         const next = this.state.search;
+        // const params= getQueryFromUrl(this.props.location.search);
+        // console.log(params);
         if (prev !== next) {
             this.setState({ status: 'pending' });
             try {
                 const data = await ApiMovie(this.state.search, null);
-                // console.log(data);
                 this.setState({
                     movies: data.data.results,
                 });
-                // console.log(this.state.movies);
             } catch (error) {
                 toast.error('Опаньки Приплыли! Попробуйте позже!', {
                     autoClose: false,
@@ -36,6 +47,7 @@ class MoviesPage extends Component {
                 });
             }
             if (this.state.movies.length !== 0) {
+                // console.log('список фильмов получил');
                 this.setState({ status: 'resolved' });
             } else {
                 this.setState({ status: 'idle' });
@@ -43,6 +55,13 @@ class MoviesPage extends Component {
             }
         }
     }
+    componentWillUnmount() {
+        // console.log('компонент список фильмов поиска размонтирован');
+        this.reset();
+    }
+    // handleChangeQuery=()=>{
+
+    // }
     reset = () => {
         this.setState = {
             search: '',
@@ -50,16 +69,20 @@ class MoviesPage extends Component {
             status: 'idle',
         };
     };
-    componentWillUnmount() {
-        // console.log('компонент список фильмов поиска размонтирован');
-        this.reset();
-    }
+
     handleSearchFormSubmit = search => {
-        // console.log(search);
         this.setState({ search });
+        const { history, location } = this.props;
+        history.push({
+            pathname: location.pathname,
+            search: `query=${search}`,
+        });
     };
     render() {
-        const { movies, status } = this.state;
+        const { status, movies } = this.state;
+        // console.log(movies);
+        // const {match}= this.props
+        // console.log(this.props.location.state);
         return (
             <>
                 <div>
@@ -73,17 +96,7 @@ class MoviesPage extends Component {
                         width={80}
                     />
                 )}
-                {status === 'resolved' && (
-                    <ul>
-                        {movies.map(film => (
-                            <li key={film.id}>
-                                <Link to={`movies/${film.id}`}>
-                                    {film.title}
-                                </Link>
-                            </li>
-                        ))}
-                    </ul>
-                )}
+                {status === 'resolved' && <MovieList movies={movies} />}
             </>
         );
     }
