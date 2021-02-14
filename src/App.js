@@ -4,6 +4,7 @@ import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
 import { Route, Switch } from 'react-router-dom';
 import './App.css';
 import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 // import HomePage from './views/HomePage';
 // import MoviesPage from './views/MoviesPage';
 // import MovieDetailsPage from './views/MovieDetailsPage';
