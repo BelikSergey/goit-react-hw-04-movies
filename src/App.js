@@ -1,7 +1,7 @@
 import React, { Suspense, lazy } from 'react';
 import Loader from 'react-loader-spinner';
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import './App.css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -48,7 +48,7 @@ const App = () => {
 
                     {/* <Route path='/movies/:moviesId/cast' component={Cast} /> */}
                     {/* <Route path='/movies' component={Reviews} /> */}
-                    <Route component={HomePage} />
+                    <Redirect to="/" />
                 </Switch>
             </Suspense>
             <ToastContainer position="top-left" autoClose={2000} />

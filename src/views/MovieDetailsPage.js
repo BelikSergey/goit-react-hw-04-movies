@@ -1,14 +1,21 @@
-import React, { Component } from 'react';
-import { Link, Route, withRouter } from 'react-router-dom';
+import React, { Component, Suspense, lazy } from 'react';
+import { Link, Route, Switch } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 import ApiMovie from '../services/ApiMovie';
 import Loader from 'react-loader-spinner';
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
-import Cast from '../components/Cast';
-import Reviews from '../components/Reviews';
 import routes from '../routes';
 import s from './MovieDetailsPage.module.css';
+
+const Cast = lazy(() =>
+    import('../components/Cast' /* webpackChunkName: "movie-cast-page" */),
+);
+const Reviews = lazy(() =>
+    import(
+        '../components/Reviews' /* webpackChunkName: "movie-reviews-page" */
+    ),
+);
 
 export class MovieDetailsPage extends Component {
     static propTypes = {
@@ -47,7 +54,7 @@ export class MovieDetailsPage extends Component {
     handleGoBack = () => {
         const { location, history } = this.props;
         history.push(location?.state?.from || routes.home);
-        // this.props(location.state.search)
+        //    console.log(location, history);
     };
 
     render() {
@@ -61,7 +68,7 @@ export class MovieDetailsPage extends Component {
             release_date,
             id,
         } = this.state;
-        const { match } = this.props;
+        const { match, location } = this.props;
         // console.log(this.props);
         return (
             <>
@@ -111,27 +118,55 @@ export class MovieDetailsPage extends Component {
                             <p>Additional information</p>
                             <ul>
                                 <li>
-                                    <Link to={`${match.url}/cast`}>Cast</Link>
+                                    <Link
+                                        to={{
+                                            pathname: `${match.url}/cast`,
+                                            state: {
+                                                from:
+                                                    location?.state?.from ||
+                                                    routes.home,
+                                            },
+                                        }}
+                                    >
+                                        Cast
+                                    </Link>
                                 </li>
                                 <li>
-                                    <Link to={`${match.url}/reviews`}>
+                                    <Link
+                                        to={{
+                                            pathname: `${match.url}/reviews`,
+                                            state: {
+                                                from:
+                                                    location?.state?.from ||
+                                                    routes.home,
+                                            },
+                                        }}
+                                    >
                                         Reviews
                                     </Link>
                                 </li>
                             </ul>
                         </div>
-                        <Route
-                            path={routes.cast}
-                            render={props => {
-                                return <Cast {...props} movieId={id} />;
-                            }}
-                        />
-                        <Route
-                            path={routes.reviews}
-                            render={props => {
-                                return <Reviews {...props} movieId={id} />;
-                            }}
-                        />
+                        <Suspense>
+                            <Switch>
+                                <Route
+                                    from={location.state?.from}
+                                    path={routes.cast}
+                                    render={props => {
+                                        return <Cast {...props} movieId={id} />;
+                                    }}
+                                />
+                                <Route
+                                    from={location.state?.from}
+                                    path={routes.reviews}
+                                    render={props => {
+                                        return (
+                                            <Reviews {...props} movieId={id} />
+                                        );
+                                    }}
+                                />
+                            </Switch>
+                        </Suspense>
                     </article>
                 )}
             </>
@@ -139,4 +174,4 @@ export class MovieDetailsPage extends Component {
     }
 }
 
-export default withRouter(MovieDetailsPage);
+export default MovieDetailsPage;
